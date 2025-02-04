@@ -3,6 +3,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AuthController;
 use App\Http\Middleware;
+use Illuminate\Support\Facades\Auth;
 
 use App\Http\Controllers\PostController;
 
@@ -13,19 +14,22 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 // Ruta para procesar el login
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 
+
+
+
 // Rutas protegidas por middleware según rol
-//Route::middleware(['role:admin'])->group(function () {
+Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->middleware(['role']);
-//});
+        return 'Bienvenido administrador';
+    });
+});
 
-
-Route::middleware(['role:user'])->group(function () {
+Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('/dashboardUser', function () {
-        return view('dashboardUser'); // Vista para usuarios
+        return view('dashboardUser');
     })->name('dashboardUser');
 });
+
 
 
 
